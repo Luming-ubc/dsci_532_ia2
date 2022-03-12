@@ -104,6 +104,7 @@ app$layout(
           # Graph Container Div                  
           htmlDiv(
             list(
+
               dccLoading(
                 id = 'loading_hist',
                 children = list(
@@ -120,7 +121,23 @@ app$layout(
                            config=list('displayModeBar'=FALSE)
                   )
                 ), type = 'circle', color = '#B33951'
+              ),
+              
+              
+              dccLoading(
+                id = 'loading_map',
+                children = list(
+                  dccGraph(id='map', 
+                            style = list('height'= '500px', 'width'= '99%'),
+                            config=list(
+                              'displayModeBar'=FALSE
+                            ))
+                ), type = 'circle', color = '#B33951'
               )
+              
+              
+              
+              
             ), style = list('width'= '70%', 'overflow'= 'hidden', 'height'= '950px', 
                             'background-color'= '#544F78', 'border-radius'= '10px', 
                             'padding'= '1%')
@@ -129,7 +146,6 @@ app$layout(
       )
     ), style = list('display'= 'fixed', 'height'= '100%', 'background-color'= '#322c4a')
   ))
-
 
 filter_data <- function (data, year_range=c(1896, 2016), season='Both', medals='All', sport=list('All'), country=list('All') ){
   
@@ -198,7 +214,33 @@ app$callback(
   }
 )
 
+# Function which takes filtered data, does additional aggregation, and plots the choropleth
+app$callback(
+  list(
+    output('map', 'figure')
+    ),
+  list(
+    input('year_range', 'value'),
+    input('sport', 'value'),
+    input('country', 'value'),
+    input('medals', 'value'),
+    input('season', 'value')),
+  function(year_range, sport, country, medals, season){
+  filtered = filter_data(df, year_range=year_range, sport=sport, country=country, medals=medals, season=season)
+  filtered <- filtered %>% group_by(Team, NOC) %>% 
+    summarise(number = n_distinct(Name)) %>% 
+    rename(COUNTRY = Team, Number.of.Athletes = number)
+  map <-plot_ly(filtered, type='choropleth', 
+                locations=~NOC, 
+                z=~Number.of.Athletes, 
+                text=~COUNTRY, 
+                color=~Number.of.Athletes, 
+                colorscale='Reds')
+  map <- layout(map, title = 'Number of Athletes Per Country')
 
+  return (list(map))
+}
+)
 
-# app$run_server(debug = T )
-app$run_server(host= '0.0.0.0')
+app$run_server(debug = T )
+# app$run_server(host= '0.0.0.0')
