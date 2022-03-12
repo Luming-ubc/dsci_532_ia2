@@ -214,6 +214,7 @@ app$callback(
   }
 )
 
+
 # Function which takes filtered data, does additional aggregation, and plots the choropleth
 app$callback(
   list(
@@ -236,7 +237,14 @@ app$callback(
                 text=~COUNTRY, 
                 color=~Number.of.Athletes, 
                 colorscale='Reds')
-  map <- layout(map, title = 'Number of Athletes Per Country')
+  map <- layout(map, title = 'Number of Athletes Per Country',
+                paper_bgcolor='rgba(0,0,0,0)',
+                geo = list(bgcolor = 'rgba(0,0,0,0)',
+                           framecolor= 'rgba(0,0,0,0)',
+                           landcolor= '#7e48b0',
+                           lakecolor= '#484ab0')
+                )
+
 
   return (list(map))
 }
