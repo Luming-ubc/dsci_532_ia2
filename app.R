@@ -210,7 +210,7 @@ app$callback(
       scale_y_continuous(labels = scales::label_number_si())+
       theme
     
-    return(list(ggplotly(fig1),ggplotly(fig2),ggplotly(fig3)))
+    return()
   }
 )
 
