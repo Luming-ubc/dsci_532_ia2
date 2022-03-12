@@ -5,7 +5,7 @@ The deployed partial app is hosted here https://dsci532-2022-ia2-lyang.herokuapp
 
 Steps to reproduce:
 
-1. `git clone git@github.com:Luming-ubc/dsci_532_ia2.git`
+1. `git clone https://github.com/Luming-ubc/dsci_532_ia2.git`
 2. `cd dsci_532_ia2`
 3. `heroku create --stack container dsci532-2022-ia2-lyang`
 4. `git push heroku main`
